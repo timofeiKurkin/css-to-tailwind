@@ -1,70 +1,50 @@
-import * as csstree from "css-tree"
+import type { ClassnameTreeType, DeclarationItemType, LevelType } from "@/types/func/postcss"
+import { isBlock, parseCss } from "./parsecss"
+import { propertyMap } from "./styles/index"
 
-const CSSFields = {
-    "aspect-ratio": {
+const convertDeclaration = (declaration: DeclarationItemType): string => {
+    const property = declaration.property.trim().toLowerCase()
+    const handler = propertyMap[property]
+    // return handler ? handler(declaration.value) : ""
 
-    }
+    if (handler) return handler.converter.call(handler.ctx || {}, declaration.value)
+
+    return ""
 }
 
+const convertRules = (rules: DeclarationItemType[] | undefined): string => {
+    if (rules === undefined) return ""
 
-const parseRaw = (css: string): csstree.StyleSheet => {
-    return csstree.parse(css) as csstree.StyleSheet
+    const fullClassname: string[] = []
+
+    rules.forEach((rule) => fullClassname.push(convertDeclaration(rule)))
+
+    fullClassname.filter(Boolean).sort()
+    return fullClassname.join(" ")
 }
 
-interface ItemType {
-    selector: string,
-    rules?: any[],
-    blocks?: any[]
-}
+const throughLevels = (levels: LevelType): ClassnameTreeType | undefined => {
+    if (!isBlock(levels)) return
 
-interface DeclarationItemType {
-    declaration: Record<"property" | "value", string>
-}
-
-type LevelType = DeclarationItemType | ItemType | null | LevelType[]
-
-const parseLevel = (node: csstree.CssNode): LevelType => {
-    if (node.type === "Raw") {
-        return parseRaw(node.value).children.toArray().map(parseLevel).filter(Boolean)
-    }
-
-    if (node.type === "Rule" || node.type === "Atrule") {
-        // '@' + node.name + ' ' + csstree.generate(node.prelude)
-        const selector = node.type === 'Rule' ? node.prelude?.type === 'SelectorList' ? csstree.generate(node.prelude) : '[Unknown Selector]' : ""
-        if (!selector) return null
-
-        const children = node.block?.children.toArray().map(parseLevel).filter(Boolean)
-        const res: ItemType = { selector }
-
-        const rules = children?.filter((item) => !Array.isArray(item))
-        if (rules) res['rules'] = rules
-
-        const blocks = children?.filter((item) => Array.isArray(item))[0]
-        if (blocks) res['blocks'] = blocks
-
-        return res
+    const fullClassname = convertRules(levels?.rules)
+    const res: ClassnameTreeType = {
+        selector: levels.selector,
+        classname: fullClassname,
     }
 
-    if (node.type === "Declaration") {
-        return {
-            "declaration": {
-                "property": node.property,
-                "value": csstree.generate(node.value)
-            }
-        } satisfies DeclarationItemType
-    }
+    const blocks = levels.blocks?.map(throughLevels).filter((item) => item !== undefined)
 
-    return null
+    if (blocks) res["blocks"] = blocks
+
+    return res
 }
 
-export const parseCss = (css: string) => {
-    // return await postcss([]).process(css, { parser: safeParser, from: undefined })
+export const handler = (css: string) => {
+    const levels = parseCss(css)
+    const parsedLevels = levels?.map(throughLevels)
 
-    const ast = parseRaw(css)
-    const levels = ast.children.toArray().map(parseLevel).filter(Boolean)
-    console.log(levels)
-
-    // return csstree.lexer.matchType("Declaration", ast)
+    console.log("levels: ", levels)
+    console.log("parsedLevels: ", parsedLevels)
 }
 
 /* 

@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import { parseCss } from '@/func/postcss';
+import { handler } from '@/func/postcss';
 import { onMounted, ref, watch } from 'vue';
 import MonacoWrapper from './UI/MonacoWrapper.vue';
 
@@ -30,11 +30,11 @@ const updateInput = (value: string) => {
 }
 
 watch(code, () => {
-    parseCss(code.value)
+    handler(code.value)
 })
 
 onMounted(() => {
-    parseCss(code.value)
+    handler(code.value)
 })
 
 </script>
