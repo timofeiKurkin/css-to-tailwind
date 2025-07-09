@@ -1,131 +1,139 @@
-import type { ConvertFunctionType, FindByKeyOrEmptyParser, FindOrEmptyParser } from "@/types/func/postcss"
-import { GeneralSet } from "."
+import type { BaseParserType, GeneralParserType, ListParserType, ObjParserType } from "@/types/func/postcss"
 
+
+export const cleanValue = (value: string): string => value.replace(/\s/g, '')
 
 const escapeValue = (value: string): string => {
     return value.replace(/\\/g, '\\\\').replace(/([!\"#$%&'()*+,./:;<=>?@[\]^`{|}~])/g, '\\$1')
 }
 
-export const findByKeyOrEmptyParser: FindByKeyOrEmptyParser = function (this, value) {
-    if (!this || !this?.base || !this.obj) return ""
+export const findByKeyOrEmptyParser: ObjParserType = (ctx, value) => {
+    if (!ctx || !ctx.obj) return ""
 
-    const clean = value.replace(/\s/g, '')
+    const clean = cleanValue(value)
 
     // Match with keyword
-    if (this.obj[clean])
-        return this.base.concat(this.obj[clean]).join("-")
+    if (typeof ctx.obj[clean] === "string")
+        return ctx.base ? ctx.base.concat(ctx.obj[clean]).filter(Boolean).join("-") : ctx.obj[clean]
 
     return ""
 }
 
-export const findOrEmptyParser: FindOrEmptyParser = function (this, value) {
-    if (!this || !this.set) return ""
+export const findOrEmptyParser: ListParserType = (ctx, value) => {
+    if (!ctx || !ctx.set) return ""
 
-    const clean = value.replace(/\s/g, '')
+    const clean = cleanValue(value)
 
     // Match with keyword
-    if (this.set.has(clean))
-        return this.base ? this.base.concat(clean).join("-") : clean
+    if (ctx.set.has(clean))
+        return ctx.base ? ctx.base.concat(clean).join("-") : clean
 
     return ""
 }
 
 
-export const variableParser: ConvertFunctionType = function (this, value) {
-    if (!this || !this?.base) return ""
+export const variableParser: GeneralParserType = (ctx, value) => {
+    if (!ctx || !ctx.base) return ""
 
     // var(--custom-var)
     if (/^var\(--[\w-]+\)$/.test(value))
-        return this.base.concat(`[${value}]`).join("-")
+        return ctx.base.concat(`[${ctx.variablePrefix || ""}${value}]`).join("-")
     if (/^--[\w-]+$/.test(value))
-        return this.base.concat(`[var(${value})]`).join("-")
+        return ctx.base.concat(`[${ctx.variablePrefix || ""}var(${value})]`).join("-")
 
     return ""
 }
 
-
-const functionParser: ConvertFunctionType = function (this, value) {
-    if (!this || !this?.base) return ""
+const functionParser: GeneralParserType = (ctx, value) => {
+    if (!ctx || !ctx?.base) return ""
 
     // calc(), clamp(), min(), max()
     if (/^[a-z]+\(.+\)$/.test(value))
-        return this.base.concat(`[${value}]`).join("-")
+        return ctx.base.concat(`[${value}]`).join("-")
 
     return ""
 }
 
 
-const fractionParser: ConvertFunctionType = function (this, value) {
-    if (!this || !this?.base) return ""
+const fractionParser: GeneralParserType = (ctx, value) => {
+    if (!ctx || !ctx?.base) return ""
 
     // Fraction 3/2
     if (/^\d+\/\d+$/.test(value))
-        return this.base.concat(value).join("-")
+        return ctx.base.concat(value).join("-")
 
     return ""
 }
 
 
-const valueParser: ConvertFunctionType = function (this, value) {
-    if (!this || !this?.base) return ""
+export const valueParser: GeneralParserType = (ctx, value) => {
+    if (!ctx || !ctx?.base) return ""
 
     // Any value in px, %, rem, em
     if (/^\d+(px|rem|em|%)$/.test(value))
-        return this.base.concat(value).join("-")
+        return ctx.base.concat(`[${value}]`).join("-")
 
     return ""
 }
 
-const numberParser: ConvertFunctionType = function (this, value) {
-    if (!this || !this?.base) return ""
+const numberParser: GeneralParserType = (ctx, value) => {
+    if (!ctx || !ctx?.base) return ""
 
     // Parse number
     if (/^[\d.]+$/.test(value))
-        return this.base.concat(value).join("-")
+        return ctx.base.concat(value).join("-")
 
     return ""
 }
 
 
-export const otherValueParser: ConvertFunctionType = function (this, value) {
-    if (!this || !this?.base) return ""
+export const otherValueParser: GeneralParserType = (ctx, value) => {
+    if (!ctx || !ctx?.base) return ""
 
     // [value]
     if (/^[\w\s%\/\.\-\(\)\[\],:+*]*$/.test(value))
-        return this.base.concat(`[${escapeValue(value)}]`).join("-")
+        return ctx.base.concat(`[${escapeValue(value)}]`).join("-")
 
     return ""
 }
 
+export const parseValueOrVariable: BaseParserType = (ctx, value) => {
+    if (!ctx.base) return ""
 
-export const genericConverter: ConvertFunctionType = function (this, value) {
-    if (!this || !this?.base) return ""
-
-    const clean = value.replace(/\s/g, '')
-
-    const parsedKeyword = findOrEmptyParser.call(Object.assign({ set: GeneralSet }, this), clean)
-    if (parsedKeyword) return parsedKeyword
-
-    const parsedSizeKeyword = findByKeyOrEmptyParser.call(this, clean)
-    if (parsedSizeKeyword) return parsedSizeKeyword
-
-    const parsedVariable = variableParser.call(this, clean)
+    const parsedVariable = variableParser(ctx, value)
     if (parsedVariable) return parsedVariable
 
-    const parsedFunction = functionParser.call(this, clean)
+    const parsedValue = valueParser(ctx, value)
+    if (parsedValue) return parsedValue
+
+    const parsedOtherValue = otherValueParser(ctx, value)
+    if (parsedOtherValue) return parsedOtherValue
+
+    return ""
+}
+
+export const genericConverter: GeneralParserType = (ctx, value) => {
+    if (!ctx || !ctx?.base) return ""
+
+    const clean = cleanValue(value)
+
+    const parsedKeyword = findOrEmptyParser(ctx, clean)
+    if (parsedKeyword) return parsedKeyword
+
+    const parsedSizeKeyword = findByKeyOrEmptyParser(ctx, clean)
+    if (parsedSizeKeyword) return parsedSizeKeyword
+
+    const parsedFunction = functionParser(ctx, clean)
     if (parsedFunction) return parsedFunction
 
-    const parsedFraction = fractionParser.call(this, clean)
+    const parsedFraction = fractionParser(ctx, clean)
     if (parsedFraction) return parsedFraction
 
-    const parsedNumber = numberParser.call(this, clean)
+    const parsedNumber = numberParser(ctx, clean)
     if (parsedNumber) return parsedNumber
 
-    const parsedNumeric = valueParser.call(this, clean)
-    if (parsedNumeric) return parsedNumeric
-
-    const parsedValue = otherValueParser.call(this, clean)
-    if (parsedValue) return parsedValue
+    const parsedValueOrVariable = parseValueOrVariable(ctx, clean)
+    if (parsedValueOrVariable) return parsedValueOrVariable
 
     return ""
 }
