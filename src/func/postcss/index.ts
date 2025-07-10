@@ -5,10 +5,8 @@ import { propertyMap } from "./styles/index"
 const convertDeclaration = (declaration: DeclarationItemType): string => {
     const property = declaration.property.trim().toLowerCase()
     const handler = propertyMap[property]
-    // return handler ? handler(declaration.value) : ""
 
     if (handler) return handler.converter(handler.ctx || {}, declaration.value)
-
     return ""
 }
 

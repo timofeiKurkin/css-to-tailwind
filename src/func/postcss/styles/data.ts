@@ -251,3 +251,9 @@ export const WillChangeObj: Record<string, string> = {
     "contents": "contents",
     "transform": "transform",
 }
+
+export const PositionObj: Record<string, string> = {
+    "100%": "full",
+    "1px": "-1px",
+    "auto": "auto",
+}

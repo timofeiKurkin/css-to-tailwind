@@ -7,14 +7,19 @@ const escapeValue = (value: string): string => {
     return value.replace(/\\/g, '\\\\').replace(/([!\"#$%&'()*+,./:;<=>?@[\]^`{|}~])/g, '\\$1')
 }
 
+const isNegative = (value: string): boolean => value.startsWith("-")
+
 export const findByKeyOrEmptyParser: ObjParserType = (ctx, value) => {
     if (!ctx || !ctx.obj) return ""
 
     const clean = cleanValue(value)
+    const positiveValue = clean.replace(/^-/, "")
 
     // Match with keyword
-    if (typeof ctx.obj[clean] === "string")
-        return ctx.base ? ctx.base.concat(ctx.obj[clean]).filter(Boolean).join("-") : ctx.obj[clean]
+    if (typeof ctx.obj[positiveValue] === "string") {
+        const negative = isNegative(clean) ? "-" : ""
+        return negative + (ctx.base ? ctx.base.concat(ctx.obj[positiveValue]).filter(Boolean).join("-") : ctx.obj[positiveValue])
+    }
 
     return ""
 }
@@ -55,12 +60,16 @@ const functionParser: GeneralParserType = (ctx, value) => {
 }
 
 
-const fractionParser: GeneralParserType = (ctx, value) => {
+export const fractionParser: GeneralParserType = (ctx, value) => {
     if (!ctx || !ctx?.base) return ""
+    const clean = cleanValue(value)
 
     // Fraction 3/2
-    if (/^\d+\/\d+$/.test(value))
-        return ctx.base.concat(value).join("-")
+    if (/^-?\d+\/\d+$/.test(clean)) {
+        const value = clean.replace(/^-/, "")
+        const negative = isNegative(value) ? "-" : ""
+        return negative + ctx.base.concat(clean).join("-")
+    }
 
     return ""
 }
@@ -69,9 +78,11 @@ const fractionParser: GeneralParserType = (ctx, value) => {
 export const valueParser: GeneralParserType = (ctx, value) => {
     if (!ctx || !ctx?.base) return ""
 
+    const clean = cleanValue(value)
+
     // Any value in px, %, rem, em
-    if (/^\d+(px|rem|em|%)$/.test(value))
-        return ctx.base.concat(`[${value}]`).join("-")
+    if (/^\d+(px|rem|em|%)$/.test(clean))
+        return ctx.base.concat(`[${clean}]`).join("-")
 
     return ""
 }

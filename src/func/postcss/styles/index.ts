@@ -1,12 +1,12 @@
 import type { PropertyMapType } from "@/types/func/postcss"
 import { positionParser } from "./backgrounds"
-import { AppearanceSet, BackgroundAttachmentSet, BackgroundClipObj, BlendModeSet, BorderStyleSet, ColorObj, ColorSchemeObj, CursorSet, DisplaySet, FieldSizingSet, FlexDirectionObj, FlexObj, FlexWrapSet, FontFamilyObj, FontStretchSet, FontStyleObj, FontVariantNumericObj, FontWeightObj, GeneralObj, GeneralSet, GridAutoXYObj, GridFlowObj, HyphensSet, LayoutAlignmentObj, ListStylePositionSet, ListStyleTypeSet, MaskClipObj, MaskCompositeSet, MaskModeObj, MaskTypeObj, ObjectFitSet, ObjectPositionObj, OverflowSet, OverflowWrapSet, OverscrollSet, PointerEventsSet, PositionSet, RepeatMap, ResizeObj, ScrollBehaviorSet, ScrollSnapAlignObj, ScrollSnapStopSet, TextAlignSet, TextDecorationObj, TextDecorationStyleSet, TextDecorationThicknessSet, TextOverflowSet, TextTransformObj, TextWrapSet, TouchActionSet, UserSelectSet, VerticalAlignSet, VisibilitySet, WhiteSpaceSet, WillChangeObj, WordBreakObj } from "./data"
+import { AppearanceSet, BackgroundAttachmentSet, BackgroundClipObj, BlendModeSet, BorderStyleSet, ColorObj, ColorSchemeObj, CursorSet, DisplaySet, FieldSizingSet, FlexDirectionObj, FlexObj, FlexWrapSet, FontFamilyObj, FontStretchSet, FontStyleObj, FontVariantNumericObj, FontWeightObj, GeneralObj, GeneralSet, GridAutoXYObj, GridFlowObj, HyphensSet, LayoutAlignmentObj, ListStylePositionSet, ListStyleTypeSet, MaskClipObj, MaskCompositeSet, MaskModeObj, MaskTypeObj, ObjectFitSet, ObjectPositionObj, OverflowSet, OverflowWrapSet, OverscrollSet, PointerEventsSet, PositionObj, PositionSet, RepeatMap, ResizeObj, ScrollBehaviorSet, ScrollSnapAlignObj, ScrollSnapStopSet, TextAlignSet, TextDecorationObj, TextDecorationStyleSet, TextDecorationThicknessSet, TextOverflowSet, TextTransformObj, TextWrapSet, TouchActionSet, UserSelectSet, VerticalAlignSet, VisibilitySet, WhiteSpaceSet, WillChangeObj, WordBreakObj } from "./data"
 import { gridColumnParser } from "./flexAndGrid"
 import { findByKeyOrEmptyParser, findOrEmptyParser, genericConverter, parseValueOrVariable } from "./genericConverter"
 import { isolationParser, objectPositionParser, visibilityParser } from "./layout"
 import { sizingParser } from "./sizing"
 import { spacingParser } from "./spacing"
-import { fontFamilyParser, fontWeightParser } from "./typography"
+import { contentParser, fontFamilyParser, fontWeightParser } from "./typography"
 
 
 export const propertyMap: PropertyMapType = {
@@ -33,6 +33,15 @@ export const propertyMap: PropertyMapType = {
     "position": { "ctx": { "set": PositionSet }, "converter": findOrEmptyParser },
     "visibility": { "ctx": { "set": VisibilitySet }, "converter": visibilityParser },
     "z-index": { "ctx": { "base": ["z"], "set": GeneralSet }, "converter": genericConverter },
+    "inset": { "ctx": { "base": ["top"], "obj": PositionObj }, "converter": positionParser },
+    "inset-inline": { "ctx": { "base": ["top"], "obj": PositionObj }, "converter": positionParser },
+    "inset-block": { "ctx": { "base": ["top"], "obj": PositionObj }, "converter": positionParser },
+    "inset-inline-start": { "ctx": { "base": ["top"], "obj": PositionObj }, "converter": positionParser },
+    "inset-inline-end": { "ctx": { "base": ["top"], "obj": PositionObj }, "converter": positionParser },
+    "top": { "ctx": { "base": ["top"], "obj": PositionObj }, "converter": positionParser },
+    "left": { "ctx": { "base": ["left"], "obj": PositionObj }, "converter": positionParser },
+    "right": { "ctx": { "base": ["right"], "obj": PositionObj }, "converter": positionParser },
+    "bottom": { "ctx": { "base": ["bottom"], "obj": PositionObj }, "converter": positionParser },
 
 
     // Flexbox & Grid
@@ -51,8 +60,8 @@ export const propertyMap: PropertyMapType = {
     "grid-auto-columns": { "ctx": { "base": ["auto-cols"], "obj": GridAutoXYObj }, "converter": genericConverter },
     "grid-auto-rows": { "ctx": { "base": ["auto-rows"], "obj": GridAutoXYObj }, "converter": genericConverter },
     "gap": { "ctx": { "base": ["gap"] }, "converter": genericConverter },
-    "gap-x": { "ctx": { "base": ["gap-x"] }, "converter": genericConverter },
-    "gap-y": { "ctx": { "base": ["gap-y"] }, "converter": genericConverter },
+    "column-gap": { "ctx": { "base": ["gap-x"] }, "converter": genericConverter },
+    "row-gap": { "ctx": { "base": ["gap-y"] }, "converter": genericConverter },
     "justify-content": { "ctx": { "base": ["justify"], "obj": LayoutAlignmentObj }, "converter": findByKeyOrEmptyParser },
     "justify-items": { "ctx": { "base": ["justify-items"], "obj": LayoutAlignmentObj }, "converter": findByKeyOrEmptyParser },
     "justify-self": { "ctx": { "base": ["justify-self"], "obj": LayoutAlignmentObj }, "converter": findByKeyOrEmptyParser },
@@ -123,13 +132,13 @@ export const propertyMap: PropertyMapType = {
     "word-break": { "ctx": { "base": ["break"], "obj": WordBreakObj }, "converter": findByKeyOrEmptyParser },
     "overflow-wrap": { "ctx": { "base": ["wrap"], "set": OverflowWrapSet }, "converter": findOrEmptyParser },
     "hyphens": { "ctx": { "base": ["hyphens"], "set": HyphensSet }, "converter": findOrEmptyParser },
-    "content": { "ctx": { "base": ["content"], "set": GeneralSet }, "converter": genericConverter },
+    "content": { "ctx": { "base": ["content"], }, "converter": contentParser },
 
 
     // Backgrounds
     "background-attachment": { "ctx": { "base": ["bg"], "set": BackgroundAttachmentSet }, "converter": findOrEmptyParser },
     "background-clip": { "ctx": { "base": ["bg-clip"], "obj": BackgroundClipObj }, "converter": findByKeyOrEmptyParser },
-    "background-color": { "ctx": { "base": ["bg"], "obj": ColorObj }, "converter": genericConverter },
+    "background-color": { "ctx": { "base": ["bg"], "obj": ColorObj, "variablePrefix": "color:" }, "converter": genericConverter },
     "background-image": { "ctx": { "base": ["bg"], "set": GeneralSet }, "converter": genericConverter },
     "background-origin": { "ctx": { "base": ["bg-origin"], "obj": BackgroundClipObj }, "converter": findByKeyOrEmptyParser },
     "background-position": { "ctx": { "base": ["bg"], "obj": ObjectPositionObj, "additional": ["position"] }, "converter": positionParser },

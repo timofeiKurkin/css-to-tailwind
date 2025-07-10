@@ -1,4 +1,4 @@
-import type { ObjParserType } from "@/types/func/postcss";
+import type { BaseParserType, ObjParserType } from "@/types/func/postcss";
 import { cleanValue, findByKeyOrEmptyParser, otherValueParser, variableParser } from "./genericConverter";
 
 export const fontFamilyParser: ObjParserType = (ctx, value) => {
@@ -31,4 +31,13 @@ export const fontWeightParser: ObjParserType = (ctx, value) => {
     if (parsedValue) return parsedValue
 
     return ""
+}
+
+export const contentParser: BaseParserType = (ctx, value) => {
+    if (value === "auto") return "content-auto"
+
+    const variable = variableParser(ctx, value)
+    if (variable) return variable
+
+    return `content-[${value}]`
 }
