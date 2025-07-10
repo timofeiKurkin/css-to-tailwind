@@ -4,11 +4,10 @@
 </template>
 
 <script setup lang="ts">
-import { getLocalStorageValue } from '@/func/localStorage';
-import { defineTheme } from '@/func/theme';
+import { useAppStore } from '@/libs/pinia/appStore';
 import type { MonacoWrapperType } from '@/types/components/UI/MonacoWrapperType';
 import monaco from 'monaco-editor';
-import { onMounted, ref, shallowRef } from 'vue';
+import { onMounted, ref, shallowRef, watch } from 'vue';
 
 const props = defineProps<MonacoWrapperType>()
 
@@ -19,6 +18,7 @@ const MONACO_EDITOR_OPTIONS = {
 }
 
 // const preferTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'vs-dark' : 'vs'
+const appStore = useAppStore()
 const preferTheme = ref<"vs" | "vs-dark">()
 // const code = ref<string>("/* Your CSS or SCSS code here */")
 const editor = shallowRef()
@@ -44,9 +44,12 @@ const change = (value: string | undefined) => {
 }
 
 onMounted(() => {
-    const theme = getLocalStorageValue("theme", defineTheme())
+    if(appStore.theme === "dark") preferTheme.value = "vs-dark"
+    else preferTheme.value = "vs"
+})
 
-    if(theme === "dark") preferTheme.value = "vs-dark"
+watch(() => appStore.theme, () => {
+    if (appStore.theme === "dark") preferTheme.value = "vs-dark"
     else preferTheme.value = "vs"
 })
 

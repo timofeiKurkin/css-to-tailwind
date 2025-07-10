@@ -1,7 +1,7 @@
 <template>
-    <ul class="flex flex-col gap-y-10">
+    <ul class="flex flex-col gap-y-10 ">
         <li v-for="(level, index) in props.levels" :key="index" class="flex flex-col gap-3">
-            <div class="flex flex-col gap-1.5 font-medium">
+            <div class="flex flex-col gap-1.5 font-medium shrink min-h-0">
                 <ClassnameItem>
                     <span class="select-none text-zinc-500 dark:text-zinc-400">Selector:</span>
                     <span class="select-none text-zinc-900 dark:text-zinc-100">{{ level.selector }}</span>
@@ -31,7 +31,6 @@ const props = defineProps<{ levels: CSSLevelType[] }>()
 const copyToClipboard = (clasname: string) => {
     navigator.clipboard.writeText(clasname)
 }
-
 </script>
 
 <style scoped></style>
