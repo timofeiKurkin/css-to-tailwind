@@ -17,7 +17,6 @@
 
 <script setup lang="ts">
 import type { SizeProps } from '@/types';
-import { defineProps } from 'vue';
-// 1.36
+
 const {width = 25, height = 25} = defineProps<SizeProps>()
 </script>
