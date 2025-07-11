@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-theme="dark" class="h-full">
+<html lang="en" class="h-full m-0 p-0">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
@@ -7,8 +7,8 @@
     <link href="/src/style.css" rel="stylesheet" />
     <title>CSS to Tailwind</title>
   </head>
-  <body class="h-full">
-    <div id="app" class="bg-white dark:bg-gray-950 font-sans antialiased h-full"></div>
+  <body class="min-h-dvh flex flex-col">
+    <div id="app" class="bg-(image:--light-background) dark:bg-(image:--dark-background) font-sans antialiased h-full flex flex-col items-center flex-1"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

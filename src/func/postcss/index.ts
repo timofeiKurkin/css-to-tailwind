@@ -1,14 +1,12 @@
-import type { ClassnameTreeType, DeclarationItemType, LevelType } from "@/types/func/postcss"
+import type { CSSLevelType, DeclarationItemType, LevelType } from "@/types/func/postcss"
 import { isBlock, parseCss } from "./parsecss"
 import { propertyMap } from "./styles/index"
 
 const convertDeclaration = (declaration: DeclarationItemType): string => {
     const property = declaration.property.trim().toLowerCase()
     const handler = propertyMap[property]
-    // return handler ? handler(declaration.value) : ""
 
-    if (handler) return handler.converter.call(handler.ctx || {}, declaration.value)
-
+    if (handler) return handler.converter(handler.ctx || {}, declaration.value)
     return ""
 }
 
@@ -23,11 +21,11 @@ const convertRules = (rules: DeclarationItemType[] | undefined): string => {
     return fullClassname.join(" ")
 }
 
-const throughLevels = (levels: LevelType): ClassnameTreeType | undefined => {
+const throughLevels = (levels: LevelType): CSSLevelType | undefined => {
     if (!isBlock(levels)) return
 
     const fullClassname = convertRules(levels?.rules)
-    const res: ClassnameTreeType = {
+    const res: CSSLevelType = {
         selector: levels.selector,
         classname: fullClassname,
     }
@@ -39,21 +37,11 @@ const throughLevels = (levels: LevelType): ClassnameTreeType | undefined => {
     return res
 }
 
-export const handler = (css: string) => {
+export const CSSHandler = (css: string): CSSLevelType[] => {
     const levels = parseCss(css)
-    const parsedLevels = levels?.map(throughLevels)
 
-    console.log("levels: ", levels)
-    console.log("parsedLevels: ", parsedLevels)
+    if (levels)
+        return levels.map(throughLevels).filter((item) => item !== undefined)
+
+    return []
 }
-
-/* 
-.data {
-    display: flex;
-    flex-direction: column;
-
-    .text {
-        text-align: center;
-    }
-} 
-*/
