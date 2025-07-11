@@ -4,7 +4,6 @@
 :root {
     /* --CSS-gradient: -webkit-linear-gradient(39deg,rgba(87, 143, 202, 1) 0%, rgba(54, 116, 181, 1) 50%, rgba(161, 227, 249, 1) 100%); */
     /* --Tailwind-gradient: -webkit-linear-gradient(39deg,rgba(33, 85, 205, 1) 0%, rgba(66, 194, 255, 1) 50%, rgba(10, 161, 221, 1) 100%); */
-    /* --dark-background: linear-gradient(39deg,rgba(11, 25, 44, 1) 30%, rgba(0, 0, 0, 1) 70%); */
     --dark-background: linear-gradient(
         39deg,
         rgba(23, 24, 28, 1) 0%,
@@ -32,10 +31,6 @@
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-}
-
-.darkBackground {
-    background-color: linear-gradient(39deg, rgba(34, 40, 49, 1) 30%, rgba(57, 62, 70, 1) 71%);
 }
 
 * {

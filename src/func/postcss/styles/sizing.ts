@@ -18,6 +18,5 @@ export const sizingParser: GeneralParserType = (ctx, value) => {
     const parsedValue = otherValueParser(ctx, clean)
     if (parsedValue) return parsedValue
 
-    console.log(ctx.base, value)
     return ""
 }

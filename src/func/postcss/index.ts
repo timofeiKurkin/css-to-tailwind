@@ -45,14 +45,3 @@ export const CSSHandler = (css: string): CSSLevelType[] => {
 
     return []
 }
-
-/* 
-.data {
-    display: flex;
-    flex-direction: column;
-
-    .text {
-        text-align: center;
-    }
-} 
-*/

@@ -188,7 +188,7 @@ export const propertyMap: PropertyMapType = {
     "mask-size": { "ctx": { "base": ["mask"], "set": ObjectFitSet, "additional": ["size"] }, "converter": positionParser },
     "mask-type": { "ctx": { "base": ["mask-type"], "obj": MaskTypeObj }, "converter": findByKeyOrEmptyParser },
 
-    // TODO: Add filters
+    // TODO: Add filters, tables, transitions & animations, transforms
 
     // Interactivity
     "accent-color": { "ctx": { "base": ["accent-color"], "obj": ColorObj }, "converter": genericConverter },

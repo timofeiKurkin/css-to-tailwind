@@ -1,5 +1,30 @@
-# Vue 3 + TypeScript + Vite
+# Convert your CSS code to Tailwind styles
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+First of all this project was created to help beginners get used to Tailwind and learn the most frequently used classes. Also, it is very useful for developers who are switching from CSS to Tailwind in their projects.
 
-Learn more about the recommended Project Setup and IDE Support in the [Vue Docs TypeScript Guide](https://vuejs.org/guide/typescript/overview.html#project-setup).
+## How does it work?
+
+It's simple: paste your CSS (or SCSS) code into the editor, and the tool will automatically convert each selector into a list of matching Tailwind utility classes.
+
+Under the hood, your code is parsed by [css-tree](https://www.npmjs.com/package/css-tree) into an `abstract syntax tree (AST)`. The app then traverses the AST, analyzes each block, and for every style rule, finds the closest Tailwind equivalent while preserving the original structure where possible.
+
+For every CSS block, you will see:
+- the **original selector** (like `.button`)
+- the **Tailwind classes** that recreate the same style or the most closest one
+
+### Which CSS properties are ***not*** supported?
+
+Here the list unmaintained CSS properties:
+- **Filters**:
+    - `blur`, `brightness`, `contrast`, `drop-shadow` (only inside filter)
+    - `grayscale`, `hue-rotate`, `invert`, `opacity` (only in backdrop-filter)
+    - `saturate`, `sepia`
+- **Tables**: 
+    - `border-collapse`, `border-spacing`, `table-layout`, `caption-side`
+- **Transitions & Animation**: 
+    - `transition-property`, `transition-behavior`, `transition-duration`, `transition-timing-function`, `transition-delay`, `animation`
+- **Transforms**: 
+    - `backface-visibility`, `perspective`, `perspective-origin`
+    - `rotate`, `scale`, `skew`, `transform`, `transform-origin`, `transform-style`, `translate`
+
+These properties are either rarely used or difficult to parse reliably. For example, Tailwind’s animation utility is mapped to entire CSS blocks, which makes automated parsing complex. In such cases, it's often better to learn the corresponding Tailwind utilities directly.
