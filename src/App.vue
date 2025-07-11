@@ -2,18 +2,19 @@
     <div class="lg:w-[85vw] flex flex-col gap-y-12 flex-1 p-10 box-border">
         <div class="flex justify-between flex-col gap-6 lg:flex-row lg:gap-0">
             <div class="flex flex-col gap-3">
-                <a href="https://github.com/timofeiKurkin/css-to-tailwind" target="_blank">
-                    <Logo :width="90" :height="66" />
-                </a>
+                <Logo :width="90" :height="66" />
                 <MainTitle>
-                Convert your <span class="css-gradient gradient-highlight italic font-black tracking-wider">CSS</span> code to <a
-                    href="https://tailwindcss.com/docs" target="_blank"><span
-                        class="tailwind-gradient gradient-highlight italic font-black tracking-wider">Tailwind</span></a>
-            </MainTitle>
+                    Convert your <span
+                        class="css-gradient gradient-highlight italic font-black tracking-wider">CSS</span> code to <a
+                        href="https://tailwindcss.com/docs" target="_blank"><span
+                            class="tailwind-gradient gradient-highlight italic font-black tracking-wider">Tailwind</span></a>
+                </MainTitle>
             </div>
 
             <div class="flex items-center lg:self-end gap-x-10">
-                <GitHub />
+                <a href="https://github.com/timofeiKurkin/css-to-tailwind" target="_blank">
+                    <GitHub />
+                </a>
 
                 <SwitchTheme />
             </div>
