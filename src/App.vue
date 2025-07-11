@@ -1,13 +1,22 @@
 <template>
     <div class="lg:w-[85vw] flex flex-col gap-y-12 flex-1 p-10 box-border">
-        <div class="flex justify-between items-center">
-            <MainTitle>
-                Convert your <span class=" text-blue-500 italic">CSS</span> code into <a
+        <div class="flex justify-between flex-col gap-6 lg:flex-row lg:gap-0">
+            <div class="flex flex-col gap-3">
+                <a href="https://github.com/timofeiKurkin/css-to-tailwind" target="_blank">
+                    <Logo :width="90" :height="66" />
+                </a>
+                <MainTitle>
+                Convert your <span class="css-gradient gradient-highlight italic font-black tracking-wider">CSS</span> code to <a
                     href="https://tailwindcss.com/docs" target="_blank"><span
-                        class="italic text-sky-500">Tailwind</span></a>
+                        class="tailwind-gradient gradient-highlight italic font-black tracking-wider">Tailwind</span></a>
             </MainTitle>
+            </div>
 
-            <SwitchTheme />
+            <div class="flex items-center lg:self-end gap-x-10">
+                <GitHub />
+
+                <SwitchTheme />
+            </div>
         </div>
 
         <Converter />
@@ -19,6 +28,8 @@
 import Converter from "@/components/Converter.vue";
 import { onBeforeMount } from "vue";
 import SwitchTheme from "./components/Blocks/SwitchTheme.vue";
+import GitHub from "./components/UI/SVG/GitHub.vue";
+import Logo from "./components/UI/SVG/Logo.vue";
 import MainTitle from "./components/UI/TextTemplates/MainTitle.vue";
 import { useAppStore } from "./libs/pinia/appStore";
 

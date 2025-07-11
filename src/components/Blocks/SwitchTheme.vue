@@ -1,10 +1,10 @@
 <template>
     <div @click="switchTheme"
-        class="text-zinc-900 dark:text-zinc-100 w-26 h-[40px] outline-2 rounded-3xl pt-2 pb-2 pl-3.5 pr-3.5 overflow-hidden relative">
+        class="text-zinc-900 dark:text-zinc-100 w-26 h-[43px] border-2 rounded-3xl pt-2 pb-2 pl-3.5 pr-3.5 overflow-hidden relative cursor-pointer">
 
         <!-- :class="'grid grid-cols-[repeat(2,' + width + 'px)] justify-between items-center relative'"   -->
-        <div class="grid grid-cols-2 justify-between items-center relative"
-            :style="{ columnGap: '0px', width: `${(width * 2) + 40}px` }">
+        <div class="flex justify-between items-center relative"
+            :style="{ columnGap: '0px', width: `100%`, height: `${height}px` }">
 
             <div v-for="(item, index) in themeObj" :key="index" class="relative flex items-center justify-center"
                 :style="{ width: `${width}px`, height: `${height}px` }">
@@ -12,7 +12,7 @@
 
                 <motion.div v-if="appStore.theme === item.theme" layout-id="underline"
                     class="absolute z-0 rounded-4xl bg-sky-200 dark:bg-zinc-700"
-                    :style="{ width: `${width + 20}px`, height: `${height + 10}px` }" />
+                    :style="{ width: `${width + 15}px`, height: `${height + 10}px` }" />
             </div>
 
         </div>
