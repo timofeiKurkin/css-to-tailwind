@@ -1,5 +1,6 @@
 import type { CSSLevelType, DeclarationItemType, LevelType } from "@/types/func/postcss"
-import { isBlock, parseCss } from "./parsecss"
+import { isBlock } from "@/types/type-guards/parsecss"
+import { parseCSS } from "./parsecss"
 import { propertyMap } from "./styles/index"
 
 const convertDeclaration = (declaration: DeclarationItemType): string => {
@@ -38,10 +39,10 @@ const throughLevels = (levels: LevelType): CSSLevelType | undefined => {
 }
 
 export const CSSHandler = (css: string): CSSLevelType[] => {
-    const levels = parseCss(css)
+    const CSSLevels = parseCSS(css)
 
-    if (levels)
-        return levels.map(throughLevels).filter((item) => item !== undefined)
+    if (CSSLevels)
+        return CSSLevels.map(throughLevels).filter((item) => item !== undefined)
 
     return []
 }

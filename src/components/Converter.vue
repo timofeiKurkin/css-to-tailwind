@@ -6,12 +6,11 @@
             <Title title="Your CSS code:" />
 
             <div class="rounded-3xl overflow-hidden outline-2 outline-neutral-200 dark:outline-none h-full flex-1">
-                <MonacoWrapper :value="code" :update-value="updateInput" :error-exists="setErrorExists" />
+                <MonacoWrapper v-model="CSSStateHandler" :set-editor-mounted="setEditorMounted" />
             </div>
         </div>
 
         <div class="flex flex-col gap-y-6 col-1 row-2 xl:col-2 xl:row-1">
-            <!-- max-h-[inherit] -->
             <Title title="Tailwind classes:" />
 
             <div class="rounded-3xl overflow-hidden outline-2 outline-neutral-200 dark:outline-none h-full flex-1 min-h-0">
@@ -40,33 +39,48 @@
 </template>
 
 <script setup lang="ts">
+import { getLocalStorageValue, setLocalStorageValue } from '@/func/localStorage';
 import { CSSHandler } from '@/func/postcss';
 import type { CSSLevelType } from '@/types/func/postcss';
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { computed, onBeforeUnmount, ref, watch } from 'vue';
 import TailwindClassname from './Blocks/ClassnameLevel.vue';
 import MonacoWrapper from './Blocks/MonacoWrapper.vue';
 import Title from "./UI/TextTemplates/Title.vue";
 
 const timer = ref<ReturnType<typeof setTimeout> | null>(null)
-const errorExists = ref(false)
-const setErrorExists = (status: boolean) => errorExists.value = status
 
-const code = ref<string>(localStorage.getItem("css") || "/* Your CSS or SCSS code here */")
+const editorMounted = ref(false)
+const setEditorMounted = () => editorMounted.value = true
+
+const CSSRef = ref<string>(getLocalStorageValue("css", "/* Your CSS or SCSS code here */"))
 const CSSLevels = ref<CSSLevelType[]>([])
+const setCSSLevels = (newCSS: CSSLevelType[]) => CSSLevels.value = newCSS
 
-const updateInput = (value: string) => {
-    code.value = value
-    localStorage.setItem("css", value)
+const CSSStateHandler = computed<string, string>({
+    get() {
+        return CSSRef.value
+    },
+    set(newCode) {
+        CSSRef.value = newCode
+        setLocalStorageValue("css", newCode)
+    }
+})
+
+const parseCSS = (CSS: string) => {
+    timer.value = setTimeout(() => {
+        const newCSS = CSSHandler(CSS)
+
+        if (newCSS)
+            setCSSLevels(newCSS)
+    }, 800)
 }
 
-watch(code, () => {
+watch(CSSRef, (updatedCSS) => {
     if (timer.value !== null) {
         clearTimeout(timer.value)
     }
 
-    timer.value = setTimeout(() => {
-        CSSLevels.value = CSSHandler(code.value)
-    }, 600)
+    parseCSS(updatedCSS)
 })
 
 onBeforeUnmount(() => {
@@ -75,32 +89,9 @@ onBeforeUnmount(() => {
     }
 })
 
-onMounted(() => {
-    CSSLevels.value = CSSHandler(code.value)
-})
+watch(editorMounted, () => {
+    parseCSS(CSSRef.value)
+}, { once: true })
 
 </script>
-
-<style lang="css">
-/* 
-.data {
-    display: flex;
-    flex-direction: column;
-
-    .text {
-        text-align: center;
-    }
-} 
-*/
-
-/* @media screen and ((max-height: 600px) and (min-width: 1024px)) {
-    .converter {
-        grid-template-rows: minmax(100px, 1fr);
-    }
-
-    .about-project {
-        display: none;
-    }
-} */
-
-</style>
+<style lang="css"></style>
