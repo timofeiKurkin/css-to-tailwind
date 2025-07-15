@@ -26,7 +26,7 @@
 
 
 <script setup lang="ts">
-import Converter from "@/components/Converter.vue";
+import Converter from "@/components/Blocks/Converter.vue";
 import { onBeforeMount } from "vue";
 import SwitchTheme from "./components/Blocks/SwitchTheme.vue";
 import GitHub from "./components/UI/SVG/GitHub.vue";

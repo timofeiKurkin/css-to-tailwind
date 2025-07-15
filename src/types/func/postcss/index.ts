@@ -30,3 +30,4 @@ interface FieldType {
 }
 
 export type PropertyMapType = Record<string, FieldType>
+export type CSSHandlerType = (CSS: string) => CSSLevelType[]

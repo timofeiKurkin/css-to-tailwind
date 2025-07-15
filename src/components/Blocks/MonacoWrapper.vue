@@ -5,7 +5,7 @@
 
 <script setup lang="ts">
 import { useAppStore } from '@/libs/pinia/appStore';
-import type { MonacoWrapperType } from '@/types/components/UI/MonacoWrapperType';
+import type { MonacoWrapperType } from '@/types/components/Blocks/MonacoWrapperType';
 import * as monaco from 'monaco-editor';
 import { onMounted, ref, shallowRef, watch } from 'vue';
 

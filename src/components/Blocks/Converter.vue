@@ -1,6 +1,6 @@
 <template>
     <div
-        class="flex-1 grid grid-rows-[400px_1fr_min-content] grid-cols-1 xl:grid-cols-2 xl:grid-rows-[minmax(0,0.75fr)_minmax(0,0.25fr)] w-full gap-10">
+        class="flex-1 grid grid-rows-[400px_1fr_min-content] grid-cols-1 xl:grid-cols-2 xl:grid-rows-[minmax(0,0.75fr)_minmax(0,0.25fr)] w-full h-full gap-10">
         <!-- [0.7fr_0.3fr] -->
         <div class="flex flex-col gap-y-6 col-1 row-1">
             <Title title="Your CSS code:" />
@@ -13,8 +13,8 @@
         <div class="flex flex-col gap-y-6 col-1 row-2 xl:col-2 xl:row-1">
             <Title title="Tailwind classes:" />
 
-            <div class="rounded-3xl overflow-hidden outline-2 outline-neutral-200 dark:outline-none h-full flex-1 min-h-0">
-                <div class="p-5 bg-zinc-50 dark:bg-zinc-800 overflow-y-auto overflow-x-hidden h-full min-h-0">
+            <div class="rounded-3xl overflow-hidden outline-2 outline-neutral-200 dark:outline-none flex-1">
+                <div class="p-5 bg-zinc-50 dark:bg-zinc-800 overflow-y-auto overflow-x-hidden h-full">
                     <TailwindClassname :levels="CSSLevels" />
                 </div>
             </div>
@@ -39,15 +39,19 @@
 </template>
 
 <script setup lang="ts">
+import TailwindClassname from '@/components/Blocks/ClassnameLevel.vue';
+import MonacoWrapper from '@/components/Blocks/MonacoWrapper.vue';
+import Title from "@/components/UI/TextTemplates/Title.vue";
 import { getLocalStorageValue, setLocalStorageValue } from '@/func/localStorage';
-import { CSSHandler } from '@/func/postcss';
+import type { CSSParserWorkerType } from '@/types/components/Blocks/ConverterType';
 import type { CSSLevelType } from '@/types/func/postcss';
+import * as Comlink from "comlink";
 import { computed, onBeforeUnmount, ref, watch } from 'vue';
-import TailwindClassname from './Blocks/ClassnameLevel.vue';
-import MonacoWrapper from './Blocks/MonacoWrapper.vue';
-import Title from "./UI/TextTemplates/Title.vue";
 
 const timer = ref<ReturnType<typeof setTimeout> | null>(null)
+const worker = Comlink.wrap<CSSParserWorkerType>(new Worker(
+    new URL('@/func/postcss', import.meta.url), {type: "module", name: "CSSParser"}
+))
 
 const editorMounted = ref(false)
 const setEditorMounted = () => editorMounted.value = true
@@ -68,10 +72,11 @@ const CSSStateHandler = computed<string, string>({
 
 const parseCSS = (CSS: string) => {
     timer.value = setTimeout(() => {
-        const newCSS = CSSHandler(CSS)
-
-        if (newCSS)
-            setCSSLevels(newCSS)
+        console.log(worker)
+        worker.CSSHandler(CSS).then((res) => {
+            if (res)
+                setCSSLevels(res)
+        })
     }, 800)
 }
 
