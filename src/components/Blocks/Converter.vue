@@ -5,7 +5,7 @@
             <Title title="Your CSS code:" />
 
             <div class="rounded-3xl overflow-hidden outline-2 outline-neutral-200 dark:outline-none flex-1">
-                <MonacoWrapper v-model="CSSStateHandler" :set-editor-mounted="setEditorMounted" />
+                <MonacoWrapper v-model="computedCSS" :set-editor-mounted="setEditorMounted" />
             </div>
         </div>
 
@@ -60,7 +60,7 @@ const CSSRef = ref<string>(getLocalStorageValue("css", "/* Your CSS or SCSS code
 const CSSLevels = ref<CSSLevelType[]>([])
 const setCSSLevels = (newCSS: CSSLevelType[]) => CSSLevels.value = newCSS
 
-const CSSStateHandler = computed<string, string>({
+const computedCSS = computed<string, string>({
     get() {
         return CSSRef.value
     },
@@ -72,7 +72,6 @@ const CSSStateHandler = computed<string, string>({
 
 const parseCSS = (CSS: string) => {
     timer.value = setTimeout(() => {
-        console.log(worker)
         worker.CSSHandler(CSS).then((res) => {
             if (res)
                 setCSSLevels(res)
@@ -80,7 +79,7 @@ const parseCSS = (CSS: string) => {
     }, 800)
 }
 
-watch(CSSRef, (updatedCSS) => {
+watch(() => computedCSS.value, (updatedCSS) => {
     if (timer.value !== null) {
         clearTimeout(timer.value)
     }
@@ -95,7 +94,7 @@ onBeforeUnmount(() => {
 })
 
 watch(editorMounted, () => {
-    parseCSS(CSSRef.value)
+    parseCSS(computedCSS.value)
 }, { once: true })
 
 </script>

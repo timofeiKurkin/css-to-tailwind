@@ -1,6 +1,6 @@
 <template>
-    <vue-monaco-editor :value="props.modelValue" language="css" :theme="preferTheme" :options="MONACO_EDITOR_OPTIONS"
-        @mount="handleMount" @validate="errorHandler" @change="change" />
+    <vue-monaco-editor :value="model" @change="change" language="css" :theme="preferTheme"
+        :options="MONACO_EDITOR_OPTIONS" @mount="handleMount" @validate="errorHandler" />
 </template>
 
 <script setup lang="ts">
@@ -10,7 +10,7 @@ import * as monaco from 'monaco-editor';
 import { onMounted, ref, shallowRef, watch } from 'vue';
 
 const props = defineProps<MonacoWrapperType>()
-const emits = defineEmits()
+const model = defineModel<string>()
 
 const MONACO_EDITOR_OPTIONS = {
     automaticLayout: true,
@@ -44,7 +44,7 @@ const errorHandler = props.setErrorExists ? (markers: monaco.editor.IMarker[]) =
 } : undefined
 
 const change = (value: string | undefined) => {
-    emits('update:modelValue', value)
+    model.value = value
 }
 
 onMounted(() => {

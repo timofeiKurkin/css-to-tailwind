@@ -11,14 +11,14 @@
                     <span class="select-none text-zinc-500 dark:text-zinc-400 mt-0.4">Tailwind:</span>
                     <span class="bg-sky-300 dark:bg-cyan-800 rounded-sm cursor-pointer"
                         @click="copyToClipboard(level.classname)">
-                        <span class="flex tracking-wide text-zinc-900 dark:text-zinc-100 p-1">"{{ level.classname
-                            }}"</span>
+                        <span class="flex tracking-wide text-zinc-900 dark:text-zinc-100 p-1">"{{ level.classname.trim()
+                        }}"</span>
                     </span>
                 </ClassnameItem>
             </div>
 
             <div class="pl-10" v-if="level.blocks && level.blocks.length">
-                <classname-level :levels="level.blocks" />
+                <classname-level :levels="level.blocks"></classname-level>
             </div>
         </li>
     </ul>
