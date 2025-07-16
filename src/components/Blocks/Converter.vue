@@ -1,11 +1,10 @@
 <template>
     <div
-        class="flex-1 grid grid-rows-[400px_1fr_min-content] grid-cols-1 xl:grid-cols-2 xl:grid-rows-[minmax(0,0.75fr)_minmax(0,0.25fr)] w-full h-full gap-10">
-        <!-- [0.7fr_0.3fr] -->
+        class="grid grid-rows-[500px_1fr_min-content] grid-cols-1 xl:grid-cols-2 xl:grid-rows-[minmax(0,0.75fr)_minmax(0,0.25fr)] gap-10 w-full">
         <div class="flex flex-col gap-y-6 col-1 row-1">
             <Title title="Your CSS code:" />
 
-            <div class="rounded-3xl overflow-hidden outline-2 outline-neutral-200 dark:outline-none h-full flex-1">
+            <div class="rounded-3xl overflow-hidden outline-2 outline-neutral-200 dark:outline-none flex-1">
                 <MonacoWrapper v-model="CSSStateHandler" :set-editor-mounted="setEditorMounted" />
             </div>
         </div>
@@ -13,14 +12,15 @@
         <div class="flex flex-col gap-y-6 col-1 row-2 xl:col-2 xl:row-1">
             <Title title="Tailwind classes:" />
 
-            <div class="rounded-3xl overflow-hidden outline-2 outline-neutral-200 dark:outline-none flex-1">
-                <div class="p-5 bg-zinc-50 dark:bg-zinc-800 overflow-y-auto overflow-x-hidden h-full">
+            <div
+                class="rounded-3xl overflow-hidden outline-2 outline-neutral-200 dark:outline-none flex-1 flex flex-col">
+                <div class="p-5 bg-zinc-50 dark:bg-zinc-800 overflow-y-auto overflow-x-hidden flex-1">
                     <TailwindClassname :levels="CSSLevels" />
                 </div>
             </div>
         </div>
 
-        <div class="lg:col-span-2 xl:row-2 flex flex-col gap-y-3">
+        <div class="xl:col-span-2 xl:row-2 flex flex-col gap-y-3">
             <Title title="🤔 How does it work?" />
 
             <div class="flex flex-col gap-y-2">
@@ -50,7 +50,7 @@ import { computed, onBeforeUnmount, ref, watch } from 'vue';
 
 const timer = ref<ReturnType<typeof setTimeout> | null>(null)
 const worker = Comlink.wrap<CSSParserWorkerType>(new Worker(
-    new URL('@/func/postcss', import.meta.url), {type: "module", name: "CSSParser"}
+    new URL('@/func/postcss', import.meta.url), { type: "module", name: "CSSParser" }
 ))
 
 const editorMounted = ref(false)

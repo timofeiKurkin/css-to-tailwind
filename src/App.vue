@@ -1,6 +1,6 @@
 <template>
-    <div class="lg:w-[85vw] flex flex-col gap-y-12 flex-1 p-10 box-border">
-        <div class="flex justify-between flex-col gap-6 lg:flex-row lg:gap-0">
+    <div class="lg:w-[90vw] grid grid-rows-[min-content_minmax(0,1fr)] h-full p-10 gap-y-12">
+        <div class="flex justify-between flex-col gap-6 lg:flex-row lg:gap-0 flex-none">
             <div class="flex flex-col gap-3">
                 <Logo :width="90" :height="66" />
                 <MainTitle>
@@ -35,6 +35,8 @@ import MainTitle from "./components/UI/TextTemplates/MainTitle.vue";
 import { useAppStore } from "./libs/pinia/appStore";
 
 const store = useAppStore()
+
+// lg:w-[85vw] flex flex-col gap-y-12 flex-1 p-10 h-full
 
 onBeforeMount(() => {
     const htmlElement = document.getElementsByTagName("html")[0]
