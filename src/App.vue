@@ -36,8 +36,6 @@ import { useAppStore } from "./libs/pinia/appStore";
 
 const store = useAppStore()
 
-// lg:w-[85vw] flex flex-col gap-y-12 flex-1 p-10 h-full
-
 onBeforeMount(() => {
     const htmlElement = document.getElementsByTagName("html")[0]
     htmlElement.setAttribute("data-theme", store.theme)

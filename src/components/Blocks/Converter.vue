@@ -5,7 +5,7 @@
             <Title title="Your CSS code:" />
 
             <div class="rounded-3xl overflow-hidden outline-2 outline-neutral-200 dark:outline-none flex-1">
-                <MonacoWrapper v-model="CSSStateHandler" :set-editor-mounted="setEditorMounted" />
+                <MonacoWrapper v-model="computedCSS" :set-editor-mounted="setEditorMounted" />
             </div>
         </div>
 
@@ -40,13 +40,14 @@
 
 <script setup lang="ts">
 import TailwindClassname from '@/components/Blocks/ClassnameLevel.vue';
-import MonacoWrapper from '@/components/Blocks/MonacoWrapper.vue';
 import Title from "@/components/UI/TextTemplates/Title.vue";
 import { getLocalStorageValue, setLocalStorageValue } from '@/func/localStorage';
 import type { CSSParserWorkerType } from '@/types/components/Blocks/ConverterType';
 import type { CSSLevelType } from '@/types/func/postcss';
 import * as Comlink from "comlink";
-import { computed, onBeforeUnmount, ref, watch } from 'vue';
+import { computed, defineAsyncComponent, onBeforeUnmount, ref, watch } from 'vue';
+
+const MonacoWrapper = defineAsyncComponent(() => import('@/components/Blocks/MonacoWrapper.vue'))
 
 const timer = ref<ReturnType<typeof setTimeout> | null>(null)
 const worker = Comlink.wrap<CSSParserWorkerType>(new Worker(
@@ -60,7 +61,7 @@ const CSSRef = ref<string>(getLocalStorageValue("css", "/* Your CSS or SCSS code
 const CSSLevels = ref<CSSLevelType[]>([])
 const setCSSLevels = (newCSS: CSSLevelType[]) => CSSLevels.value = newCSS
 
-const CSSStateHandler = computed<string, string>({
+const computedCSS = computed<string, string>({
     get() {
         return CSSRef.value
     },
@@ -72,7 +73,6 @@ const CSSStateHandler = computed<string, string>({
 
 const parseCSS = (CSS: string) => {
     timer.value = setTimeout(() => {
-        console.log(worker)
         worker.CSSHandler(CSS).then((res) => {
             if (res)
                 setCSSLevels(res)
@@ -80,7 +80,7 @@ const parseCSS = (CSS: string) => {
     }, 800)
 }
 
-watch(CSSRef, (updatedCSS) => {
+watch(() => computedCSS.value, (updatedCSS) => {
     if (timer.value !== null) {
         clearTimeout(timer.value)
     }
@@ -95,7 +95,7 @@ onBeforeUnmount(() => {
 })
 
 watch(editorMounted, () => {
-    parseCSS(CSSRef.value)
+    parseCSS(computedCSS.value)
 }, { once: true })
 
 </script>
