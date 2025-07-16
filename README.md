@@ -2,6 +2,13 @@
 
 First of all this project was created to help beginners get used to Tailwind and learn the most frequently used classes. Also, it is very useful for developers who are switching from CSS to Tailwind in their projects.
 
+Stack:
+- [Vite v7.0](https://vite.dev)
+- [Vue v3.5](https://vuejs.org)
+- [Pinia](https://pinia.vuejs.org)
+- [CSS-Tree](https://github.com/csstree/csstree)
+
+
 ## How does it work?
 
 It's simple: paste your CSS (or SCSS) code into the editor, and the tool will automatically convert each selector into a list of matching Tailwind utility classes.

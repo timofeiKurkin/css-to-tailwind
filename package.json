@@ -1,5 +1,5 @@
 {
-  "name": "vue-ui-playground",
+  "name": "parse-css-to-tailwind",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -12,13 +12,12 @@
     "@guolao/vue-monaco-editor": "^1.5.5",
     "@tailwindcss/vite": "^4.1.11",
     "@types/node": "^24.0.10",
+    "comlink": "^4.4.2",
     "css-tree": "^3.1.0",
     "monaco-editor": "^0.52.2",
     "motion-v": "^1.5.0",
     "path": "^0.12.7",
     "pinia": "^3.0.3",
-    "postcss": "^8.5.6",
-    "postcss-safe-parser": "^7.0.1",
     "tailwindcss": "^4.1.11",
     "vue": "^3.5.17"
   },

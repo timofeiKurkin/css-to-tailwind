@@ -1,25 +1,20 @@
 import type { DeclarationItemType, ItemType, LevelType } from "@/types/func/postcss"
+import { isBlockList, isDeclaration, isStyleSheet } from "@/types/type-guards/parsecss"
 import * as csstree from "css-tree"
 
-const parseRaw = (css: string): csstree.StyleSheet => {
-    return csstree.parse(css) as csstree.StyleSheet
-}
-
-export const isDeclaration = (node: LevelType): node is DeclarationItemType => {
-    return node !== undefined && !Array.isArray(node) && "property" in node && "value" in node
-}
-
-export const isBlockList = (node: LevelType): node is ItemType[] => {
-    return node !== undefined && Array.isArray(node) && isBlock(node[0])
-}
-
-export const isBlock = (node: LevelType): node is ItemType => {
-    return node !== undefined && !Array.isArray(node) && "selector" in node
+const parseRaw = (css: string): csstree.CssNode | undefined => {
+    try {
+        return csstree.parse(css, { positions: true, context: "stylesheet" })
+    } catch (e) {
+        console.log("Error parsing CSS:", e)
+    }
 }
 
 const parseLevel = (node: csstree.CssNode): LevelType => {
     if (node.type === "Raw") {
-        return parseRaw(node.value).children.toArray().map(parseLevel).filter(Boolean)
+        const parsedCSS = parseRaw(node.value)
+        if (!isStyleSheet(parsedCSS)) return
+        return parsedCSS.children.toArray().map(parseLevel).filter(Boolean)
     }
 
     if (node.type === "Rule" || node.type === "Atrule") {
@@ -57,6 +52,11 @@ const parseLevel = (node: csstree.CssNode): LevelType => {
     return
 }
 
-export const parseCss = (css: string): LevelType[] => {
-    return parseRaw(css).children.toArray().map(parseLevel).filter(Boolean)
+export const parseCSS = (css: string): LevelType[] => {
+    const parsedRaw = parseRaw(css)
+
+    if (!isStyleSheet(parsedRaw))
+        return []
+
+    return parsedRaw.children.toArray().map(parseLevel).filter(Boolean)
 }

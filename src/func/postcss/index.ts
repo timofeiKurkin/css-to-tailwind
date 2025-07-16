@@ -1,6 +1,9 @@
-import type { CSSLevelType, DeclarationItemType, LevelType } from "@/types/func/postcss"
-import { isBlock, parseCss } from "./parsecss"
-import { propertyMap } from "./styles/index"
+import type { CSSHandlerType, CSSLevelType, DeclarationItemType, LevelType } from "@/types/func/postcss";
+import { isBlock } from "@/types/type-guards/parsecss";
+import * as Comlink from "comlink";
+import { parseCSS } from "./parsecss";
+import { propertyMap } from "./styles/index";
+
 
 const convertDeclaration = (declaration: DeclarationItemType): string => {
     const property = declaration.property.trim().toLowerCase()
@@ -21,27 +24,41 @@ const convertRules = (rules: DeclarationItemType[] | undefined): string => {
     return fullClassname.join(" ")
 }
 
-const throughLevels = (levels: LevelType): CSSLevelType | undefined => {
+const parseCSSLevels = (levels: LevelType): CSSLevelType | undefined => {
     if (!isBlock(levels)) return
 
     const fullClassname = convertRules(levels?.rules)
+    if (!fullClassname)
+        return
+
     const res: CSSLevelType = {
         selector: levels.selector,
         classname: fullClassname,
     }
 
-    const blocks = levels.blocks?.map(throughLevels).filter((item) => item !== undefined)
+    const blocks = levels.blocks?.map(parseCSSLevels).filter((item) => item !== undefined)
 
     if (blocks) res["blocks"] = blocks
 
     return res
 }
 
-export const CSSHandler = (css: string): CSSLevelType[] => {
-    const levels = parseCss(css)
+export const CSSHandler: CSSHandlerType = (css) => {
+    const CSSLevels = parseCSS(css)
 
-    if (levels)
-        return levels.map(throughLevels).filter((item) => item !== undefined)
+    if (CSSLevels)
+        return CSSLevels.map(parseCSSLevels).filter((item) => item !== undefined)
 
     return []
 }
+
+Comlink.expose({ CSSHandler })
+
+// class CSSParser {
+//     parseCSS(css: string): CSSLevelType[] {
+//         const CSSLevels = parseCSS(css)
+//         if (CSSLevels)
+//             return CSSLevels.map(throughLevels).filter((item) => item !== undefined)
+//         return []
+//     }
+// }
