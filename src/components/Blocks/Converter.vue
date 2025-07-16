@@ -40,13 +40,14 @@
 
 <script setup lang="ts">
 import TailwindClassname from '@/components/Blocks/ClassnameLevel.vue';
-import MonacoWrapper from '@/components/Blocks/MonacoWrapper.vue';
 import Title from "@/components/UI/TextTemplates/Title.vue";
 import { getLocalStorageValue, setLocalStorageValue } from '@/func/localStorage';
 import type { CSSParserWorkerType } from '@/types/components/Blocks/ConverterType';
 import type { CSSLevelType } from '@/types/func/postcss';
 import * as Comlink from "comlink";
-import { computed, onBeforeUnmount, ref, watch } from 'vue';
+import { computed, defineAsyncComponent, onBeforeUnmount, ref, watch } from 'vue';
+
+const MonacoWrapper = defineAsyncComponent(() => import('@/components/Blocks/MonacoWrapper.vue'))
 
 const timer = ref<ReturnType<typeof setTimeout> | null>(null)
 const worker = Comlink.wrap<CSSParserWorkerType>(new Worker(
