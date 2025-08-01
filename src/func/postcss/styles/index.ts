@@ -1,6 +1,6 @@
 import type { PropertyMapType } from "@/types/func/postcss"
 import { positionParser } from "./backgrounds"
-import { AppearanceSet, BackgroundAttachmentSet, BackgroundClipObj, BlendModeSet, BorderStyleSet, ColorObj, ColorSchemeObj, CursorSet, DisplaySet, FieldSizingSet, FlexDirectionObj, FlexObj, FlexWrapSet, FontFamilyObj, FontStretchSet, FontStyleObj, FontVariantNumericObj, FontWeightObj, GeneralObj, GeneralSet, GridAutoXYObj, GridFlowObj, HyphensSet, LayoutAlignmentObj, ListStylePositionSet, ListStyleTypeSet, MaskClipObj, MaskCompositeSet, MaskModeObj, MaskTypeObj, ObjectFitSet, ObjectPositionObj, OverflowSet, OverflowWrapSet, OverscrollSet, PointerEventsSet, PositionObj, PositionSet, RepeatMap, ResizeObj, ScrollBehaviorSet, ScrollSnapAlignObj, ScrollSnapStopSet, TextAlignSet, TextDecorationObj, TextDecorationStyleSet, TextDecorationThicknessSet, TextOverflowSet, TextTransformObj, TextWrapSet, TouchActionSet, UserSelectSet, VerticalAlignSet, VisibilitySet, WhiteSpaceSet, WillChangeObj, WordBreakObj } from "./data"
+import { AppearanceSet, BackfaceVisibilitySet, BackgroundAttachmentSet, BackgroundClipObj, BlendModeSet, BorderCollapseSet, BorderStyleSet, CaptionSideSet, ColorObj, ColorSchemeObj, CursorSet, DisplaySet, FieldSizingSet, FlexDirectionObj, FlexObj, FlexWrapSet, FontFamilyObj, FontStretchSet, FontStyleObj, FontVariantNumericObj, FontWeightObj, GeneralObj, GeneralSet, GridAutoXYObj, GridFlowObj, HyphensSet, LayoutAlignmentObj, ListStylePositionSet, ListStyleTypeSet, MaskClipObj, MaskCompositeSet, MaskModeObj, MaskTypeObj, ObjectFitSet, ObjectPositionObj, OverflowSet, OverflowWrapSet, OverscrollSet, PerspectiveOriginObj, PointerEventsSet, PositionObj, PositionSet, RepeatMap, ResizeObj, ScrollBehaviorSet, ScrollSnapAlignObj, ScrollSnapStopSet, TableLayoutSet, TextAlignSet, TextDecorationObj, TextDecorationStyleSet, TextDecorationThicknessSet, TextOverflowSet, TextTransformObj, TextWrapSet, TouchActionSet, TransformStyleObj, TransitionBehaviorObj, UserSelectSet, VerticalAlignSet, VisibilitySet, WhiteSpaceSet, WillChangeObj, WordBreakObj } from "./data"
 import { gridColumnParser } from "./flexAndGrid"
 import { findByKeyOrEmptyParser, findOrEmptyParser, genericConverter, parseValueOrVariable } from "./genericConverter"
 import { isolationParser, objectPositionParser, visibilityParser } from "./layout"
@@ -188,7 +188,25 @@ export const propertyMap: PropertyMapType = {
     "mask-size": { "ctx": { "base": ["mask"], "set": ObjectFitSet, "additional": ["size"] }, "converter": positionParser },
     "mask-type": { "ctx": { "base": ["mask-type"], "obj": MaskTypeObj }, "converter": findByKeyOrEmptyParser },
 
-    // TODO: Add filters, tables, transitions & animations, transforms
+    // TODO: Add filters, transitions & animations, transforms
+
+    // Tables
+    "border-collapse": { "ctx": { "base": ["border"], "set": BorderCollapseSet }, "converter": findOrEmptyParser },
+    "table-layout": { "ctx": { "base": ["table"], "set": TableLayoutSet }, "converter": findOrEmptyParser },
+    "caption-side": { "ctx": { "base": ["caption"], "set": CaptionSideSet }, "converter": findOrEmptyParser },
+
+    // Transitions & animations
+    "transition-behavior": { "ctx": { "base": ["transition"], "obj": TransitionBehaviorObj }, "converter": findByKeyOrEmptyParser },
+    "transition-duration": { "ctx": { "base": ["duration"], "set": GeneralSet }, "converter": genericConverter },
+    "transition-timing-function": { "ctx": { "base": ["easy"], "set": GeneralSet }, "converter": genericConverter },
+    "transition-delay": { "ctx": { "base": ["delay"] }, "converter": parseValueOrVariable },
+
+    // Transforms
+    "backface-visibility": { "ctx": { "base": ["backface"], "set": BackfaceVisibilitySet }, "converter": findOrEmptyParser },
+    "perspective": { "ctx": { "base": ["perspective"] }, "converter": parseValueOrVariable },
+    "perspective-origin": { "ctx": { "base": ["perspective-origin"], "obj": PerspectiveOriginObj }, "converter": genericConverter },
+    "transform-origin": { "ctx": { "base": ["origin"], "obj": PerspectiveOriginObj }, "converter": genericConverter },
+    "transform-style": { "ctx": { "base": ["transform"], "obj": TransformStyleObj }, "converter": findByKeyOrEmptyParser },
 
     // Interactivity
     "accent-color": { "ctx": { "base": ["accent-color"], "obj": ColorObj }, "converter": genericConverter },
