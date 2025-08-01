@@ -27,11 +27,10 @@ Here the list unmaintained CSS properties:
     - `grayscale`, `hue-rotate`, `invert`, `opacity` (only in backdrop-filter)
     - `saturate`, `sepia`
 - **Tables**: 
-    - `border-collapse`, `border-spacing`, `table-layout`, `caption-side`
+    - `border-spacing`
 - **Transitions & Animation**: 
-    - `transition-property`, `transition-behavior`, `transition-duration`, `transition-timing-function`, `transition-delay`, `animation`
+    - `transition-property`, `animation`
 - **Transforms**: 
-    - `backface-visibility`, `perspective`, `perspective-origin`
-    - `rotate`, `scale`, `skew`, `transform`, `transform-origin`, `transform-style`, `translate`
+    - `rotate`, `scale`, `skew`, `transform`, `translate`
 
 These properties are either rarely used or difficult to parse reliably. For example, Tailwind’s animation utility is mapped to entire CSS blocks, which makes automated parsing complex. In such cases, it's often better to learn the corresponding Tailwind utilities directly.

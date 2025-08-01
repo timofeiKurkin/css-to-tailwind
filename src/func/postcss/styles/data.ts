@@ -56,6 +56,10 @@ export const ScrollBehaviorSet = new Set(["auto", "smooth"])
 export const ScrollSnapStopSet = new Set(["normal", "always"])
 export const TouchActionSet = new Set(["auto", "none", "pan-x", "pan-y", "pan-left", "pan-right", "pan-up", "pan-down", "pinch-zoom", "manipulation"])
 export const UserSelectSet = new Set(["auto", "none", "text", "all"])
+export const BorderCollapseSet = new Set(["collapse", "separate"])
+export const TableLayoutSet = new Set(["auto", "fixed"])
+export const CaptionSideSet = new Set(["top", "bottom"])
+export const BackfaceVisibilitySet = new Set(["hidden", "visible"])
 
 
 // Objects
@@ -256,4 +260,26 @@ export const PositionObj: Record<string, string> = {
     "100%": "full",
     "1px": "-1px",
     "auto": "auto",
+}
+
+export const TransitionBehaviorObj: Record<string, string> = {
+    "normal": "normal",
+    "allow-discrete": "discrete",
+}
+
+export const PerspectiveOriginObj: Record<string, string> = {
+    "center": "center",
+    "top": "top",
+    "top right": "top-right",
+    "right": "right",
+    "bottom right": "bottom-right",
+    "bottom": "bottom",
+    "bottom left": "bottom-left",
+    "left": "left",
+    "top left": "top-left",
+}
+
+export const TransformStyleObj: Record<string, string> = {
+    "preserve-3d": "3d",
+    "flat": "flat",
 }
